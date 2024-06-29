@@ -1,0 +1,8 @@
+Flask==2.2.5
+Werkzeug==2.2.2
+flask-login
+flask_sqlalchemy
+Flask-Migrate
+pycountry
+flask_mail
+python-dotenv

@@ -1,0 +1,72 @@
+{% extends "base.html" %} 
+{% block title %}QuizHome{% endblock %} 
+{% block style %}
+
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="home-container">
+    <div class="home-div">
+        <div class="buttons-div">
+            <div class="buttons-row">            
+                <div class="side-buttons">
+                    <button id="leaderboardButton">
+                        <img src="{{ url_for('static', filename='images/leaderboards.png') }}" alt="Leaderboard">
+                    </button>
+                </div>
+                <div class="central-buttons">
+                    <button id="playButton" class="playButton">
+                        <img src="{{ url_for('static', filename='images/newplay.png') }}" alt="Play Button">
+                    </button>
+                    <a href="/store" >
+                        <img src="{{ url_for('static', filename='images/shopping_cart.png') }}" alt="Shopping Cart">
+                    </a>
+                </div>
+                <div class="side-buttons">
+                    <button id="createQuizButton">
+                        <img src="{{ url_for('static', filename='images/create_quiz.png') }}" alt="Create Quiz">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>      
+</div>
+<!-- The Modal -->
+<div id="quizModal" class="home-modal">
+    <div class="start-modal-container">
+        <span class="start-modal-close">&times;</span>
+        <div class="start-modal-header">Select a Quiz</div>
+        <div class="start-modal-content">
+            <input type="text" id="uniqueID" placeholder="Enter Unique Quiz ID">
+            <button id="playQuizButton">Play Quiz</button>
+            <div class="quiz-list-container">
+                <div class="quiz-list-header">
+                    <div class="header-item">ID</div>
+                    <div class="header-item">Title</div>
+                    <div class="header-item">Rating</div>
+                </div>
+                <div class="quiz-list-body">
+                    <!-- This part will be filled with JavaScript -->
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="start-modal-footer">
+            <button id="playRandomButton">Play Random Quiz</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='start.js') }}"></script>
+{% endblock %}
+
+
+

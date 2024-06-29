@@ -1,0 +1,79 @@
+{% extends "base.html" %} 
+{% block title %}QuizHome{% endblock %} 
+
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="store-title">
+    <div class="logo">
+        Welcome to the store. Spend coins and win rewards!
+    </div>
+</div>
+<div class="shelves">
+    <div class="shelf">
+        <div class="aisle">
+            <div class="reward-title-box">
+                {{ rewards[0].title if rewards else '' }}
+            </div>   
+            <img src="{{ url_for('static', filename=rewards[0].image_url) }}" alt="bronze_trophy" class="centered-image">
+            <div class="price-tag">{{ rewards[0].coin_cost if rewards else '0' }}
+                <img src="{{ url_for('static', filename='images/gold_coin.png') }}" class="price-coin"/>
+            </div>
+            <button class="buy-reward-btn" type="button">Buy Reward</button>
+        </div>
+        <div class="aisle">
+            <div class="reward-title-box">
+                {{ rewards[1].title if rewards[1] else '' }}
+            </div>  
+            <img src="{{ url_for('static', filename=rewards[1].image_url) }}" alt="silver_trophy" class="centered-image">
+            <div class="price-tag">{{ rewards[1].coin_cost if rewards else '0' }}
+                <img src="{{ url_for('static', filename='images/gold_coin.png') }}" class="price-coin"/>
+            </div>
+            <button class="buy-reward-btn" type="button">Buy Reward</button>
+        </div>
+        <div class="aisle">
+            <div class="reward-title-box">
+                {{ rewards[2].title if rewards[2] else '' }}
+            </div>  
+            <img src="{{ url_for('static', filename=rewards[2].image_url) }}" alt="gold_trophy" class="centered-image">
+            <div class="price-tag">{{ rewards[2].coin_cost if rewards else '0' }}
+                <img src="{{ url_for('static', filename='images/gold_coin.png') }}" class="price-coin"/>
+            </div>
+            <button class="buy-reward-btn" type="button">Buy Reward</button>
+        </div>
+    </div>
+    <div class="shelf">
+        <div class="aisle">
+            <div class="reward-title-box">
+                {{ rewards[3].title if rewards[3] else '' }}
+            </div>
+            <img src="{{ url_for('static', filename=rewards[3].image_url) }}" alt="50/50" class="centered-image">
+            <div class="price-tag">{{ rewards[3].coin_cost if rewards[3] else '0' }}
+                <img src="{{ url_for('static', filename='images/gold_coin.png') }}" class="price-coin"/>
+            </div>
+            <button class="buy-reward-btn" type="button">Buy Reward</button>
+        </div>
+        <div class="aisle">
+            <div class="reward-title-box">
+                {{ rewards[4].title if rewards[4] else '' }}
+            </div>
+            <img src="{{ url_for('static', filename=rewards[4].image_url) }}" alt="Replace Question" class="centered-image">
+            <div class="price-tag">{{ rewards[4].coin_cost if rewards[4] else '0' }}
+                <img src="{{ url_for('static', filename='images/gold_coin.png') }}" class="price-coin"/>
+            </div>
+            <button class="buy-reward-btn" type="button">Buy Reward</button>
+        </div>
+        <div class="aisle">
+            <button class="buy-reward-btn" type="button">Buy Reward</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='store.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %} 
+{% block title %}QuizHome{% endblock %} 
+
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="search-bar-container">
+    <div class="search-bar">
+        <input type="text" id="quiz-id" placeholder="Enter Quiz ID" title="Type the ID of the quiz, e.g. 'general' to display the leaderboard for the random quiz">
+        <button id="searchButton">Search</button>
+    </div>
+</div>
+<div class="leaderboard-container">
+    <div class="table">
+        <h2>Quiz Leaderboard</h2>
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th class="table-qcount">Rank</th>
+                    <th class="table-qcount">Country</th>
+                    <th class="table-qdesc">Username</th>
+                    <th class="table-qcount">High Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- {% for score in top_scores %} -->
+                <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <!-- {% endfor %} -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='leaderboard.js') }}"></script>
+{% endblock %}

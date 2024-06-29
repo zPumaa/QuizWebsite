@@ -1,0 +1,639 @@
+{% extends "base.html" %} 
+
+{% block title %}QuizHome{% endblock %} 
+
+{% block style %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap'); 
+
+.question-and-score-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Centered quiz question */
+.quiz-question {
+    min-width: 650px;
+    background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+    border-left: 5px solid #3a5a70; 
+    border-right: 4px solid #3a5a70;
+    padding: 20px; 
+    margin: 20px 40px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    font-family: 'Arial', sans-serif; 
+    font-size: 24px; 
+    color: #ffffff; 
+    border-radius: 8px; 
+    width: 60vw;
+    max-width: 1250px;
+}
+
+.quiz-question label {
+    display: block; 
+    text-align: center; 
+    margin-bottom: 0px; 
+    font-weight: bold; 
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .quiz-question {
+        padding: 15px;
+        font-size: 16px;
+    }
+}
+
+.answers-parent-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; 
+    align-items: center;     
+    height: 100%;
+    min-width: 0;
+}
+
+.left-container, .answers-container, .right-container {
+    flex-shrink: 0; /* Prevent the containers from shrinking smaller than their content */
+}
+
+.answers-container {
+    /* justify-content: flex-end; */
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    display: flex;
+    max-width: 1250px;
+    flex-shrink: 0;
+    min-width: 800px;
+    flex-wrap: wrap;
+}
+
+.answers {
+    min-width: 600px;
+    width: 60vw;
+    /* width: 60vw; */
+    height: 30vh;
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
+    /* align-items: center; */
+    font-size: 30px;
+}
+
+/* Base styles for answer tiles */
+.corner-tile {
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ebe1c1;
+    border-radius: 10px;
+    margin: 10px;
+    font-size: 1.5em; 
+    font-weight: bold; 
+    transition: transform 0.2s, box-shadow 0.2s; 
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2); 
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    white-space: normal;
+    text-align: center;
+    min-width: 300px;
+    max-width: 600px;
+    position: relative;
+}
+
+@media screen and (max-width: 768px) {
+    .corner-tile {
+        font-size: 20px;
+    }
+}
+
+/* Hover effect for tiles */
+.corner-tile:hover {
+    transform: translateY(-5px); 
+    box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.3); 
+}
+
+/* Correct answer tick */
+.corner-tile.correct::after {
+    content: '✓'; 
+    color: #8cc93d; 
+    font-size: 5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Incorrect answer cross */
+.corner-tile.incorrect::after {
+    content: '✕'; 
+    color: #be3c3c; 
+    font-size: 5rem; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Colors for each tile, can be adjusted as needed */
+.yellow-tile { background-color: #ffeb3b; }
+.red-tile { background-color: #f44336; }
+.blue-tile { background-color: #2196f3; }
+.green-tile { background-color: #4caf50; }
+
+.left-container {
+    width: 15vw;
+    height: 100%;
+    min-width: 150px;
+    flex-shrink: 0;
+}
+
+.right-container {
+    width: 15vw;
+    height: 100%;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hint-container {
+    margin-top: 5%;
+    height: 30%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fifty-fifty-button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.fifty-fifty-button img {
+    max-height: 150px;
+    max-width: 150px;
+    display: block;  
+    height: auto; 
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.fifty-fifty-button img:hover {
+    opacity: 0.8;
+}
+
+.flash-green {
+    background-color: #000000; 
+    animation: flashAnimation 1s forwards;
+}
+
+.flash-red {
+    background-color: #000000; 
+    animation: flashAnimation 1s forwards;
+}
+
+@keyframes flashAnimation {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.scores-container {
+    display: block;
+    width: 100vw;
+    /* background-color: #eee; */
+    border-radius: 5px;
+    margin: 0 auto;
+    flex-direction: row;
+}
+
+.timebar-container {
+    width: 60%;
+    flex-direction: column;
+    margin: 10px 20%;
+}
+
+.timebar-border {
+    border-style: solid;
+    border-radius: 5px;
+    border-color: black;
+    width: 100%;
+    height: 20px;
+    background-color: #eee;
+}
+
+.timebar {
+    height: 100%;
+    width: 100%;
+    background-color: #4caf50;
+    transition: background-color 1s linear;
+}
+
+/* Shared styles for both containers */
+.score-container {
+    top: 100px; 
+    right: 20px; 
+    width: 160px; 
+    height: 60px; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%); 
+    border: 1px solid #0084ff21; 
+    border-radius: 50%; 
+    box-shadow: 0 0 10px #0099ff; 
+    color: #f1f1f1; 
+    font-family: 'Orbitron', sans-serif; 
+    text-shadow: 0 0 10px #634d7c77; 
+    z-index: 1000; 
+    transition: transform 0.1s ease-in-out; 
+    font-weight: bold;
+}
+
+/* Shared styles for both labels */
+.score-label {
+    text-align: center; 
+    width: 100%; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    min-width: 100px;
+}
+
+/* Hover effect */
+.score-container:hover {
+    transform: scale(1.1); 
+    cursor: pointer; 
+}
+
+
+.smooth-transition {
+    transition: width 1s linear; 
+}
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 80%; 
+    max-width: 1000px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-title {
+    text-align: center; 
+    font-size: 2.5em; 
+    color: #333; 
+    margin-bottom: 20px; 
+    font-weight: bold; 
+    text-transform: capitalize; 
+    letter-spacing: 1px; 
+    font-family: 'Orbitron', sans-serif;
+}
+
+#finalScore {
+    font-size: 2em; 
+    color: #27ae60; 
+    font-weight: bold; 
+    background-color: #ecf0f1; 
+    padding: 10px 0; 
+    margin: 20px 0; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    text-align: center; 
+    font-family: 'Orbitron', sans-serif;
+}
+
+.question-circles-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    max-width: 600px; 
+    margin: 0 auto; 
+    padding-bottom: 10px; 
+}
+
+.question-circle {
+    flex: 0 0 18%;
+    margin: 5px;
+    width: 30px;
+    /* height: 80px; */
+    background-color: #ddd;
+    border-radius: 15px; 
+    background-origin: border-box; 
+    background-clip: padding-box;
+    position: relative;
+    border: 10px solid transparent;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease;  
+    text-align: center;
+    line-height: 80px; 
+    cursor: pointer;
+    font-size: 30px;
+    font-weight: 400;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.question-circle:before {
+    content: '';
+    position: absolute;
+    top: -10px; /* Match this value to border width */
+    right: -10px; 
+    bottom: -10px; 
+    left: -10px; 
+    border-radius: 15px; /* Match this value to .question-circle border-radius */
+    background: inherit; 
+    z-index: -1; 
+}
+
+.question-circle.correct {
+    background: linear-gradient(to bottom right, #60e391, #2E7D32); 
+    border-color: #47a267; 
+}
+
+.question-circle.incorrect {
+    background: linear-gradient(to bottom right, #f76c6c, #D32F2F); 
+    border-color: #f44336; 
+}
+
+.question-circle:hover {
+    transform: translateY(-2px); 
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.4); 
+}
+
+.rating-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+#questionDetails {
+    background-color: #f9f9f9; 
+    padding: 15px; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    margin-top: 15px; 
+}
+
+#questionDetails p {
+    font-size: 16px; 
+    line-height: 1.6; 
+    color: #2c3e50; 
+    margin-bottom: 5px; 
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.highlight {
+    color: #3c2750;
+}
+
+.highlight-answer {
+    color: #47a267;
+}
+
+.highlight-score {
+    color: #d3a409;
+}
+
+.star-rating {
+    display: flex;
+    font-size: 0;
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: left;
+    justify-content: center;
+    align-items: center;
+}
+
+.star-rating .star {
+    font-size: 2rem;
+    cursor: pointer;
+    display: inline-block;
+    color: #ccc; /* Color of non-selected stars */
+}
+
+.star-rating .star:hover,
+.star-rating .star:hover ~ .star,
+.star-rating .star.selected ~ .star {
+    color: #f5a623; /* Color when hovered or selected */
+}
+
+/* Button for submitting rating */
+#submitRating {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 1rem;
+}
+
+#submitRating {
+    background-color: #3498db; 
+    color: white; 
+    border: none; 
+    margin-top: 10px;
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    font-weight: bold; 
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1px; 
+    transition: background-color 0.1s ease; 
+}
+
+#submitRating:hover {
+    background-color: #2980b9; 
+}
+
+#submitRating:active {
+    transform: translateY(-2px); 
+}
+
+
+.leaderboard {
+    display: inline-block;
+    width: auto; /* Adjust as needed */
+    background-color: #caeef2;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* margin-left: 20px;
+    margin-top: 10%; */
+    min-width: 100px;
+    margin: 20px 10%;
+}
+
+.leaderboard h3 {
+    margin-bottom: 10px;
+}
+
+.leaderboard ol {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard li {
+    padding: 5px 0;
+    border-bottom: 1px solid #2b2a2a;
+}
+
+.quiz-id {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.quiz-id label {
+    display: none;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-id">
+    <label id="quiz-id-label">{{ quiz_id }}</label>
+</div>
+<div class="scores-container">
+    <!-- High Score Container -->
+
+
+    <!-- Current Score Container -->
+
+    <div class="timebar-container">
+        <div class="timebar-border">
+            <div class="timebar"></div>
+        </div>
+    </div>    
+</div>
+<div class="question-and-score-container"> 
+    <div class="score-container high-score-container">
+        <div class="score-label">
+            High Score: <span id="high-score-label">{{ highest_score }}</span>
+        </div>
+    </div>
+    <div class="quiz-question">
+        <label>{{ questions[0].question }}</label>
+    </div>
+    <div class="score-container current-score-container">
+        <div id="score-container" class="score-label">
+            <span id="score">Score: 0</span>
+        </div>
+    </div>
+</div> 
+<div class="answers-parent-container">
+        <div class="left-container">
+            <div class="leaderboard">
+                <h3>Leaderboard</h3>
+                <ol>
+                    {% for score in top_scores %}
+                        <li>{{ score.user_id }}: {{ score.score }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        <div class="answers-container">
+
+            <div class="answers">
+                <div class="corner-tile yellow-tile" onclick="handleAnswerClick(this)">{{ questions[0].answers[0] }}</div>
+                <div class="corner-tile red-tile" onclick="handleAnswerClick(this)">{{ questions[0].answers[1] }}</div>
+            </div>
+            <div class="answers">
+                <div class="corner-tile blue-tile" onclick="handleAnswerClick(this)">{{ questions[0].answers[2] }}</div>
+                <div class="corner-tile green-tile" onclick="handleAnswerClick(this)">{{ questions[0].answers[3] }}</div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="hint-container">
+                <button class="fifty-fifty-button" id="fifty-fifty-btn" {% if not is_logged_in %}disabled{% endif %}>
+                    <img src="{{ url_for('static', filename='images/50.png') }}" alt="50/50 Button">
+                </button>
+            </div>
+            <div class="hint-container">
+                <button class="fifty-fifty-button" id="replace-question-btn" {% if not is_logged_in %}disabled{% endif %}>
+                    <img src="{{ url_for('static', filename='images/replaceq.png') }}" alt="Replace Question Button">
+                </button>
+            </div>
+        </div>
+</div>
+
+<!-- Pop-up Modal for Quiz Results -->
+<div id="quizResultModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 class="modal-title">Quiz Results</h2>
+        <p id="finalScore">Final Score: </p>
+        
+        <div id="questionCircles" class="question-circles-row">
+            <!-- Circles will be dynamically added here -->
+        </div>
+
+        <div id="questionDetails">
+            <!-- Question details will be shown here -->
+        </div>
+        <!-- Rating Container -->
+        <div class="rating-container">
+            <h3>Rate this quiz:</h3>
+            <div class="star-rating">
+                <span class="star" data-value="5">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="1">&#9733;</span>
+            </div>
+            <button id="submitRating">Submit Rating</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='quiz.js') }}"></script>
+<script>
+    window.quizData = {{ questions|tojson|safe }};
+    window.replacement = {{ replacement_question|tojson|safe }};
+</script>
+{% endblock %}

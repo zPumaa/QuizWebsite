@@ -1,0 +1,47 @@
+{% extends "base.html" %} 
+{% block title %}QuizHome{% endblock %} 
+
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="search-bar-container">
+    <div class="search-bar">
+        <input type="text" id="quiz-id" placeholder="Enter Quiz ID">
+        <button id="searchBtn">Search</button>
+    </div>
+</div>
+<div class="leaderboard-container">
+    <div class="table">
+        <h2>My Quizzes</h2>
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th class="table-qtitle">Quiz Title</th>
+                    <th class="table-qdesc">Description</th>
+                    <th class="table-qcount">Questions</th>
+                    <th class="action-column">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="table-qtitle"> </td>
+                    <td class="table-qdesc"> </td>
+                    <td class="table-qcount"> </td>
+                    <td class="action-column"> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='my_quizzes.js') }}"></script>
+{% endblock %}

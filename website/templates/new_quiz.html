@@ -1,0 +1,667 @@
+{% extends "base.html" %}
+
+{% block title %}Create Quiz{% endblock %}
+
+{% block style %}
+
+<style>
+    .questions-container {
+        min-width: 800px;
+        margin: 20px 20%;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }   
+    
+    .question-numbers {
+        display: flex;
+        flex-wrap: wrap;
+        /* margin-bottom: 20px; */
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+    .question-number {
+        margin: 5px;
+        padding: 10px;
+        background-color: #9ee2ee;
+        border-radius: 10%;
+        text-align: center;
+        width: 45px;
+        height: 45px;
+        line-height: 30px; 
+        cursor: pointer;
+        user-select: none;
+        color: aliceblue;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif; 
+    }
+
+    .question-number.active {
+        background-color: #66a5d8;
+    }
+    
+    .create-quiz-container {
+        min-width: 800px;
+        margin: 20px 20%;
+        padding: 20px;
+        background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        align-items: flex-start;
+    }
+
+    .correct-answer {
+        display: grid;
+        grid-template-columns: repeat(2, auto);
+        grid-gap: 10px;
+        justify-content: start;
+        align-items: center;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.2); 
+        border-radius: 8px;
+        max-width: 300px; 
+        margin: 20px auto;
+    }
+
+    .correct-answer div.radio-option {
+        display: flex;
+        align-items: center; 
+    }
+
+    /* Individual Radio Button Styling */
+    .correct-answer input[type="radio"] {
+        margin-right: 10px; 
+        accent-color: #2193b0; 
+    }
+
+    .correct-answer label {
+        margin: 0; 
+        cursor: pointer;
+        font-size: 22px;
+        color: #ffffff; 
+        min-width: 100px;
+    }
+
+    .correct-answer > label:first-child {
+        grid-column: 1 / -1; /* Ensures the main label spans both columns */
+    }
+
+    .submit-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        height: 60px;
+        width: 140px;
+    }
+
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+
+    .save-question-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .save-question-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .question-view-container {
+        min-width: 800px;
+        margin: 20px 20%;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #question-display-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    #question-display-table th,
+    #question-display-table td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #question-display-table th {
+        background-color: #26adcf;
+        color: white;
+        width: 15%;
+        min-width: 120px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .edit-question-btn {
+        background-image: linear-gradient(135deg, #007bff 0%, #007bff 50%, #66d9ff 100%);
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 20px 0px;
+        width: 140px;
+        height: 60px;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        transition: transform 0.15s ease, box-shadow 0.15s ease; 
+    }
+
+    .edit-question-btn:hover {
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); 
+        background-image: linear-gradient(135deg, #0056b3 0%, #0056b3 50%, #66d9ff 100%);
+    }
+
+    .edit-question-btn:active {
+        transform: translateY(1px); 
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.12); 
+    }
+
+    #create-quiz-btn {
+        margin-right: 20px;
+    }
+
+    .main-button-container {
+        min-width: 800px;
+        margin: 20px 20%;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: row;
+    }
+
+    .right-answer {
+        background-color: #90ee90; 
+    }
+
+    .quiz-info-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        color: #fff;
+        min-width: 800px;
+        width: 60%;
+        margin: 20px 20%;
+    }
+
+    /* Row for Title and ID */
+    .quiz-info-top-row {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-right: 10px; 
+        margin-bottom: 15px;
+        flex: 1; /* Makes both title and ID take equal space */
+    }
+
+    .form-group:last-child {
+        margin-right: 0; 
+    }
+
+    /* Input Field Styles */
+    .form-group input[type="text"],
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: none;
+        border-radius: 6px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Description Textarea Styles */
+    .quiz-description {
+        width: 100%;
+        margin-top: 15px; 
+    }
+
+    /* Label Styles */
+    .form-group label {
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        margin-bottom: 5px;
+    }
+
+    .char-limit {
+        font-size: 14px;
+        color: #172933b2;
+        margin-top: 5px;
+        align-self: flex-end;
+    }
+
+    /* Responsive Adjustments */
+    @media (min-width: 768px) {
+        .quiz-info-top-row {
+            align-items: center; 
+        }
+
+        .form-group {
+            margin-right: 20px; 
+        }
+    }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="quiz-info-container">
+    <div class="quiz-info-top-row">
+        <div class="form-group">
+            <label for="quiz-title">Quiz Title:</label>
+            <input type="text" id="quiz-title" name="quiz-title" value="{{ quiz.title if quiz else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="quiz-unique-id">Unique Quiz ID:</label>
+            <input type="text" id="quiz-unique-id" name="quiz-unique-id" value="{{ quiz.unique_id if quiz else '' }}" required oninput="validateUniqueId(this)">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="quiz-description">Quiz Description:</label>
+        <textarea id="quiz-description" class="quiz-description" name="quiz-description" maxlength="200" value="" oninput="updateCharLimit()">{{ quiz.description if quiz else '' }}</textarea>
+        <span id="char-limit" class="char-limit">0/200</span>
+    </div>
+</div>
+
+<div class="questions-container">
+    <div class="question-numbers">
+        <!-- Question numbers will be added here dynamically -->
+    <span class="question-number active" id="question-number-1">1</span>
+    </div>
+</div>
+
+<div class="create-quiz-container" id="create-quiz-container">
+    <form id="create-quiz-form">
+        <div class="form-group">
+            <label for="question">Quiz Question :</label>
+            <input type="text" id="question" name="question" value="{{ questions[0].question if questions else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="answer1">Answer 1:</label>
+            <input type="text" id="answer1" name="answer1" value="{{ questions[0].answers[0] if questions else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="answer2">Answer 2:</label>
+            <input type="text" id="answer2" name="answer2" value="{{ questions[0].answers[1] if questions else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="answer3">Answer 3:</label>
+            <input type="text" id="answer3" name="answer3" value="{{ questions[0].answers[2] if questions else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="answer4">Answer 4:</label>
+            <input type="text" id="answer4" name="answer4" value="{{ questions[0].answers[3] if questions else '' }}">
+        </div>
+        <div class="correct-answer">
+            <label>Select the correct answer:</label>
+            <div class="radio-option">
+                <input type="radio" id="correct1" name="correct_answer" value="1" {{ 'checked' if questions and questions[0].answers[0] == questions[0].correct_answer else '' }}>
+                <label for="correct1">Answer 1</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="correct2" name="correct_answer" value="2" {{ 'checked' if questions and questions[0].answers[1] == questions[0].correct_answer else '' }}>
+                <label for="correct2">Answer 2</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="correct3" name="correct_answer" value="3" {{ 'checked' if questions and questions[0].answers[2] == questions[0].correct_answer else '' }}>
+                <label for="correct3">Answer 3</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="correct4" name="correct_answer" value="4" {{ 'checked' if questions and questions[0].answers[3] == questions[0].correct_answer else '' }}>
+                <label for="correct4">Answer 4</label>
+            </div>
+        </div>
+        
+    </form>
+    <button class="save-question-btn" id="save-question-btn">Save Question</button>
+</div>
+
+<div class="question-view-container" id="question-view-container" style="display: none;">
+    <table id="question-display-table">
+        <tbody>
+            <tr>
+                <th>Question:</th>
+                <td id="display-question"></td>
+            </tr>
+            <tr>
+                <th>Answer 1:</th>
+                <td id="display-answer1"></td>
+            </tr>
+            <tr>
+                <th>Answer 2:</th>
+                <td id="display-answer2"></td>
+            </tr>
+            <tr>
+                <th>Answer 3:</th>
+                <td id="display-answer3"></td>
+            </tr>
+            <tr>
+                <th>Answer 4:</th>
+                <td id="display-answer4"></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="edit-question-btn" id="edit-question-btn">Edit</button>
+</div>
+<div class="main-button-container" id="main-button-container" style="display: none;">
+    <button type="submit" class="edit-question-btn" id="create-quiz-btn" style="background-color: #58be5d;">Create Quiz</button>
+    <button class="edit-question-btn" id="new-question-btn">New Question</button>
+</div>
+{% endblock %}
+ 
+{% block scripts %}
+<script>
+    function validateUniqueId(input) {
+        const allowedChars = /^[a-zA-Z0-9]+$/;
+
+        // Check each character of input value
+        let value = input.value;
+        let newValue = '';
+        for (let i = 0; i < value.length; i++) {
+            if (value[i].match(allowedChars)) {
+                newValue += value[i];
+            }
+        }
+
+        input.value = newValue;
+    
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let questionsArray = [];
+        let currentQuestionIndex = 0;
+
+        const questionNumbersContainer = document.querySelector('.question-numbers');
+        const formContainer = document.getElementById('create-quiz-container');
+        const questionViewContainer = document.getElementById('question-view-container');
+        const mainButtonContainer = document.getElementById('main-button-container');
+        
+        window.quizData = {{ questions|tojson|safe }};
+        if (typeof quizData !== 'undefined' && quizData.length > 0) {
+            questionsArray = quizData; // Assign the existing questions to questionsArray
+        }
+
+        function displayForm() {
+            formContainer.style.display = 'block';
+            questionViewContainer.style.display = 'none';
+            mainButtonContainer.style.display = 'none';
+        }
+
+
+
+        function updateCharLimit() {
+            var description = document.getElementById('quiz-description');
+            var charLimitIndicator = document.getElementById('char-limit');
+            charLimitIndicator.textContent = description.value.length + '/200';
+        }
+
+        document.getElementById('quiz-description').addEventListener('input', updateCharLimit);
+        updateCharLimit();
+
+        function displayQuestion(index) {
+            const questionData = questionsArray[index];
+
+            // Update the active class on question numbers
+            document.querySelectorAll('.question-number').forEach((element, idx) => {
+                if (idx === index) {
+                    element.classList.add('active');
+                } else {
+                    element.classList.remove('active');
+                }
+            });
+
+            document.getElementById('display-question').textContent = questionData.question;
+            for (let i = 1; i <= 4; i++) {
+                const answerElement = document.getElementById(`display-answer${i}`);
+                answerElement.textContent = questionData.answers[i - 1];
+                // Clear any previous styles
+                answerElement.style.background = "";
+                answerElement.classList.remove('right-answer');
+                if (answerElement.textContent == questionData.correct_answer) {
+                    answerElement.classList.add('right-answer');
+                    // AnswerElement.style.background = "green";
+                }
+            }
+
+            document.getElementById('create-quiz-container').style.display = 'none';
+            document.getElementById('question-view-container').style.display = 'block';
+            document.getElementById('main-button-container').style.display = 'block';
+        }
+
+        function addNewQuestionNumber() {
+            const newQuestionNumber = document.createElement('span');
+            newQuestionNumber.className = 'question-number';
+            newQuestionNumber.textContent = questionsArray.length + 1;
+            newQuestionNumber.addEventListener('click', function() {
+                const index = parseInt(this.textContent) - 1;
+                if (index === questionsArray.length) {
+                    displayForm();
+                    clearForm();
+                } else {
+                    currentQuestionIndex = index;
+                    displayQuestion(index);
+                }
+            });
+            questionNumbersContainer.appendChild(newQuestionNumber);
+        }
+
+        function addNewQuestionNumber() {
+            // Only add a new question number if it doesn't already exist
+            let existingNumbers = document.querySelectorAll('.question-number');
+            let nextNumber = existingNumbers.length + 1;
+            
+            if (!existingNumbers[nextNumber - 1]) {
+                const newQuestionNumber = document.createElement('span');
+                newQuestionNumber.className = 'question-number';
+                newQuestionNumber.textContent = nextNumber;
+                newQuestionNumber.addEventListener('click', function() {
+                    const index = parseInt(this.textContent) - 1;
+                    if (index === questionsArray.length) {
+                        displayForm();
+                        clearForm();
+                    } else {
+                        currentQuestionIndex = index;
+                        displayQuestion(index);
+                    }
+                });
+                questionNumbersContainer.appendChild(newQuestionNumber);
+            }
+        }
+
+        function generateQuestionNumbers(questionsArray) {
+            // Clear existing question numbers
+            questionNumbersContainer.innerHTML = '';
+
+            // Create a question number button for each question
+            questionsArray.forEach((question, index) => {
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = index + 1;
+                questionNumber.addEventListener('click', function() {
+                    displayQuestion(index);
+                });
+                questionNumbersContainer.appendChild(questionNumber);
+            });
+        }
+        
+        function clearForm() {
+            document.getElementById('create-quiz-form').reset();
+            // Uncheck all radio buttons
+            document.querySelectorAll('input[type="radio"][name="correct_answer"]').forEach(radio => {
+                radio.checked = false;
+            });
+        }
+
+        function addQuestionToArray() {
+            const questionText = document.getElementById('question').value;
+            const answers = [
+                document.getElementById('answer1').value,
+                document.getElementById('answer2').value,
+                document.getElementById('answer3').value,
+                document.getElementById('answer4').value
+            ];
+            const correctIndex = document.querySelector('input[name="correct_answer"]:checked').value - 1;
+            const currentIndex = questionsArray.length
+            const questionData = {
+                question: questionText,
+                answers: answers,
+                correct_answer: answers[correctIndex]
+            };
+
+            // If updating an existing question, replace the data at the current index.
+            // Otherwise, add a new question to the array.
+            console.log("currentQuestionIndex:", currentQuestionIndex)
+            console.log("questions length:", questionsArray.length)
+
+            questionsArray[currentQuestionIndex] = questionData;
+            //console.log(questionsArray);
+        }
+
+        function editQuestion(index) {
+            console.log(questionsArray[index])
+            const questionText = document.getElementById('question').value;
+            const answers =  [
+                document.getElementById('answer1').value,
+                document.getElementById('answer2').value,
+                document.getElementById('answer3').value,
+                document.getElementById('answer4').value
+            ];            
+            const correctIndex = document.querySelector('input[name="correct_answer"]:checked').value - 1;
+            questionsArray[index] = {
+                question: questionText,
+                answers : answers,
+                correct_answer: answers[correctIndex]
+            };
+        }
+
+        function updateQuestionForm(index) {
+            console.log(typeof(index))
+            const questionData = questionsArray[index];
+            document.getElementById('question').value = questionData.question;
+            document.getElementById('answer1').value = questionData.answers[0];
+            document.getElementById('answer2').value = questionData.answers[1];
+            document.getElementById('answer3').value = questionData.answers[2];
+            document.getElementById('answer4').value = questionData.answers[3];
+
+            const correctAnswerIndex = questionData.answers.indexOf(questionData.correct_answer);
+
+            // Check the radio button that corresponds to the correct answer
+            if(correctAnswerIndex > -1) {
+                document.querySelector(`input[name="correct_answer"][value="${correctAnswerIndex + 1}"]`).checked = true;
+            }
+        }
+
+        document.getElementById('new-question-btn').addEventListener('click', function(event) {
+            event.preventDefault(); 
+            console.log(currentQuestionIndex, questionsArray.length)
+            // Check if there's an unsaved question
+            if (currentQuestionIndex + 1 < questionsArray.length) {
+                alert('Please save the current question before adding a new one.');
+                return;
+            }
+
+            this.setAttribute('disabled', 'disabled');
+            currentQuestionIndex = questionsArray.length; // Prepare index for a new question
+            clearForm(); 
+            addNewQuestionNumber();
+        });
+
+        document.getElementById('save-question-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            addQuestionToArray(); // Add current question to array
+            displayQuestion(currentQuestionIndex); 
+            document.getElementById('new-question-btn').removeAttribute('disabled');
+        });
+
+        document.getElementById('edit-question-btn').addEventListener('click', function() {
+            console.log(currentQuestionIndex);
+            updateQuestionForm(currentQuestionIndex);
+            displayForm();
+        });
+
+        // Event delegation for question numbers
+        document.querySelector('.question-numbers').addEventListener('click', function(event) {
+            if (event.target.classList.contains('question-number')) {
+                currentQuestionIndex = parseInt(event.target.textContent) - 1;
+                console.log(currentQuestionIndex);
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+
+        document.getElementById('create-quiz-btn').addEventListener('click', function() {
+            const title = document.getElementById('quiz-title').value;
+            var unique_id = document.getElementById('quiz-unique-id').value;
+            unique_id = unique_id.toLowerCase();
+            const description = document.getElementById('quiz-description').value;
+            const questions = questionsArray;  
+            console.log(questions);
+            fetch('/create_quiz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, unique_id, description, questions })
+            })
+            .then(response => {
+                if(response.ok) {
+                    window.location.href = '/';  // Redirect to home page
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if(data && data.error) {
+                    alert(data.error); 
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });        
+        
+        if (questionsArray.length === 0) {
+            // addNewQuestionNumber();
+        } else {
+            // Populate question numbers based on existing quiz data
+            generateQuestionNumbers(questionsArray);
+        }
+        console.log(questionsArray.length);
+
+    });
+</script>
+{% endblock %}
+
